@@ -1,53 +1,39 @@
 <template>
-    <div>
-        <!--ul>li*3 -->
-        <ul>
-            <li v-for="(todoItem, index) in todoItems" v-bind:key="todoItem.item" class="shadow">
-                <i class="fas fa-check checkBtn" v-bind:class="{checkBtnCompleted: todoItem.completed}" 
-                    v-on:click="toggleComplete(todoItem,index)"></i>
-                <span v-bind:class="{textCompleted: todoItem.completed}">{{todoItem.item}}</span>
-                <span class="removeBtn" v-on:click="removeTodo(todoItem, index)">
-                    <i class="fas fa-trash-alt"></i>
-                </span>
-            </li>
-        </ul>
-    </div>
+  <div>
+    <!--ul>li*3 -->
+    <ul>
+      <li v-for="(todoItem, index) in todoItems" :key="index" class="shadow">
+        <i
+          class="fas fa-check checkBtn"
+          :class="{ checkBtnCompleted: todoItem.completed }"
+          @click="toggleComplete(todoItem, index)"
+        ></i>
+        <span :class="{ textCompleted: todoItem.completed }">{{
+          todoItem.item
+        }}</span>
+        <span class="removeBtn" @click="removeTodo(todoItem, index)">
+          <i class="fas fa-trash-alt"></i>
+        </span>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
 export default {
-    data: function() {
-        return {
-            todoItems: []
-        }
+  props: ["todoItems"],
+  data() {
+    return {};
+  },
+  methods: {
+    removeTodo(todoItem, index) {
+      this.$emit("removeTodoEvent", todoItem, index);
     },
-    methods: {
-        removeTodo: function(todoItem, index) {
-            localStorage.removeItem(todoItem.item);
-            this.todoItems.splice(index, 1);
-        },
-        toggleComplete: function(todoItem) {
-            todoItem.completed = !todoItem.completed;
-            //localStorage에 updateItem 메서드가 없어서 removeItem하고 setItem 한다.
-            localStorage.removeItem(todoItem.item);
-            localStorage.setItem(todoItem.item, JSON.stringify(todoItem));
-        }
+    toggleComplete(todoItem, index) {
+      this.$emit("toggleTodoEvent", todoItem, index);
     },
-    /* life cycle method */
-    created: function() {
-        if(localStorage.length > 0){
-            for(var i=0; i < localStorage.length; i++) {
-                if(localStorage.key(i) !== 'loglevel:webpack-dev-server'){
-                    //console.log(typeof localStorage.getItem(localStorage.key(i)));
-                    //console.log( JSON.parse(localStorage.getItem(localStorage.key(i))) );
-                    //JSON.parse()는 json string을 object로 변환
-                    const todoObj = JSON.parse(localStorage.getItem(localStorage.key(i)));
-                    this.todoItems.push(todoObj);
-                }
-            }
-        }
-    }
-}
+  },
+};
 </script>
 
 <style scoped>
