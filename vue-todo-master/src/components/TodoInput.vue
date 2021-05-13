@@ -28,7 +28,9 @@ export default {
     addTodo() {
       if (this.newTodoItem !== "") {
         // Event 발생
-        this.$emit("addTodoEvent", this.newTodoItem);
+        // this.$emit("addTodoEvent", this.newTodoItem);
+        // stroe 생성 후 mutations에 있는 addTodo() 호출
+        this.$store.commit("addTodo", this.newTodoItem);
         this.clearInput();
         //     var value = this.newTodoItem && this.newTodoItem.trim();
         //     localStorage.setItem(value,value);

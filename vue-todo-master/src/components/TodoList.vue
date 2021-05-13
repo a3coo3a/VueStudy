@@ -2,16 +2,16 @@
   <div>
     <!--ul>li*3 -->
     <ul>
-      <li v-for="(todoItem, index) in todoItems" :key="index" class="shadow">
+      <li v-for="(todoItem, index) in getTodoItems" :key="index" class="shadow">
         <i
           class="fas fa-check checkBtn"
           :class="{ checkBtnCompleted: todoItem.completed }"
-          @click="toggleComplete(todoItem, index)"
+          @click="toggleTodo({ todoItem, index })"
         ></i>
         <span :class="{ textCompleted: todoItem.completed }">{{
           todoItem.item
         }}</span>
-        <span class="removeBtn" @click="removeTodo(todoItem, index)">
+        <span class="removeBtn" @click="removeTodo({ todoItem, index })">
           <i class="fas fa-trash-alt"></i>
         </span>
       </li>
@@ -20,18 +20,30 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
+
 export default {
-  props: ["todoItems"],
-  data() {
-    return {};
+  // stroe로 처리 예정
+  // props: ["todoItems"],
+  // data() {
+  //   return {};
+  // },
+  computed: {
+    ...mapGetters(["getTodoItems"]),
   },
   methods: {
-    removeTodo(todoItem, index) {
-      this.$emit("removeTodoEvent", todoItem, index);
-    },
-    toggleComplete(todoItem, index) {
-      this.$emit("toggleTodoEvent", todoItem, index);
-    },
+    ...mapMutations(["removeTodo", "toggleTodo"]),
+    // removeTodo(todoItem, index) {
+    //   //this.$emit("removeTodoEvent", todoItem, index);
+    //   //es5
+    //   //this.store.commit("removeTodo", { todoItem:todoItem, index:index });
+    //   //es6
+    //   this.$store.commit("removeTodo", { todoItem, index });
+    // },
+    // toggleComplete(todoItem, index) {
+    //   //this.$emit("toggleTodoEvent", todoItem, index);
+    //   this.$store.commit("toggleTodo", { todoItem, index });
+    // },
   },
 };
 </script>
