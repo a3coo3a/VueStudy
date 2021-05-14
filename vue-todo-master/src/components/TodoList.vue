@@ -1,26 +1,29 @@
 <template>
   <div>
     <!--ul>li*3 -->
-    <ul>
+    <!--<ul>-->
+    <transition-group name="list" tag="ul">
       <li v-for="(todoItem, index) in getTodoItems" :key="index" class="shadow">
         <i
           class="fas fa-check checkBtn"
           :class="{ checkBtnCompleted: todoItem.completed }"
-          @click="toggleTodo({ todoItem, index })"
+          @click="toggleTodo(todoItem)"
         ></i>
         <span :class="{ textCompleted: todoItem.completed }">{{
           todoItem.item
         }}</span>
-        <span class="removeBtn" @click="removeTodo({ todoItem, index })">
+        <span class="removeBtn" @click="removeTodo(todoItem)">
           <i class="fas fa-trash-alt"></i>
         </span>
       </li>
-    </ul>
+    </transition-group>
+    <!--</ul>-->
   </div>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+//import { mapGetters, mapActions, mapMutations } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   // stroe로 처리 예정
@@ -28,11 +31,22 @@ export default {
   // data() {
   //   return {};
   // },
+  // life cycle method
+  mounted() {
+    // actions 호출
+    this.$store.dispatch("loadTodoItems");
+  },
   computed: {
     ...mapGetters(["getTodoItems"]),
   },
   methods: {
-    ...mapMutations(["removeTodo", "toggleTodo"]),
+    ...mapActions(["removeTodo"]),
+    toggleTodo(todoItem) {
+      todoItem.completed = !todoItem.completed;
+      this.$store.dispatch("toggleTodo", todoItem);
+    },
+    //...mapMutations(["toggleTodo"]),
+    //...mapMutations(["removeTodo", "toggleTodo"]),
     // removeTodo(todoItem, index) {
     //   //this.$emit("removeTodoEvent", todoItem, index);
     //   //es5
@@ -80,5 +94,14 @@ li {
 .textCompleted {
   text-decoration: line-through;
   color: #b3adad;
+}
+.list-enter-active,
+.list-leave-active {
+  transition: all 1s;
+}
+.list-enter,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>
